@@ -3,6 +3,8 @@ require('dotenv').config();
 const express = require('express');
 const myDB = require('./connection');
 const fccTesting = require('./freeCodeCamp/fcctesting.js');
+const session = require('express-session');
+const passport = require('passport');
 
 const app = express();
 app.set('view engine', 'pug') //add app.set after app is initialized
@@ -18,7 +20,15 @@ app.route('/').get((req, res) => {
     message: 'Please login'});
 });
 
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: true,
+  saveUninitialized: true,
+  cookie: { secure: false }
+}));
 
+app.use(passport.initialize());
+app.use(passport.session());
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
