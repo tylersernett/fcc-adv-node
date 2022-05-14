@@ -1,0 +1,40 @@
+{
+  "name": "fcc-advanced-node-and-express",
+  "author": "http://github.com/JosephLivengood",
+  "version": "0.0.1",
+  "description": "What am I about?",
+  "engines": {
+    "node": "16.14.2",
+    "npm": "8.5.0"
+  },
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "ejs": "^3.1.5",
+    "express": "^4.15.2",
+    "mongodb": "^3.6.1",
+    "pug":"~3.0.0"
+  },
+  
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heroku/node-js-getting-started"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "pug",
+    "passport",
+    "socketio"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^2.0.4",
+    "got": "^11.3.0",
+    "tape": "^4.7.0"
+  }
+}
