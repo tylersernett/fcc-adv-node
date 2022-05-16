@@ -69,7 +69,19 @@ myDB(async client => {
     (req, res) => {
       res.render('/profile');
     }
-  )
+  );
+
+  function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+      return next();
+    }
+    res.redirect('/');
+  };
+
+  app.route('/profile')
+    .get(ensureAuthenticated, (req, res) => {
+      res.render(process.cwd() + '/views/pug/profile');
+    });
 
   //Now you will have to tell passport to use an instantiated LocalStrategy object with a few settings defined.
   passport.use(new LocalStrategy(
