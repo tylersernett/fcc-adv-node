@@ -6,6 +6,7 @@ const fccTesting = require('./freeCodeCamp/fcctesting.js');
 const session = require('express-session');
 const passport = require('passport');
 const ObjectID = require('mongodb').ObjectID;
+const LocalStrategy = require('passport-local');
 //To make a query search for a Mongo _id, you will have to create const ObjectID = require('mongodb').ObjectID;, 
 //and then to use it you call new ObjectID(THE_ID)
 const app = express();
@@ -60,6 +61,21 @@ myDB(async client => {
     done(null, doc);
     });
   });
+
+  //Now you will have to tell passport to use an instantiated LocalStrategy object with a few settings defined.
+  passport.use(new LocalStrategy(
+    function(username, password, done) {
+      myDataBase.findOne({ username: username }, function (err, user) {
+        console.log('User '+ username +' attempted to log in.');
+        if (err) { return done(err); }
+        if (!user) { return done(null, false); }
+        if (password !== user.password) { return done(null, false); }
+        return done(null, user);
+      });
+    }
+  ));
+  //This is defining the process to use when we try to authenticate someone locally. First, it tries to find a user in our database with the username entered, then it checks for the password to match, then finally, if no errors have popped up that we checked for, like an incorrect password, the user's object is returned and they are authenticated.
+
 }).catch(e => {
   app.route('/').get((req, res) => {
     res.render('pug', { title: e, message: 'Unable to login' });
