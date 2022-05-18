@@ -3,12 +3,14 @@ require('dotenv').config();
 const express = require('express');
 const myDB = require('./connection');
 const ObjectID = require('mongodb').ObjectID;
+//To make a query search for a Mongo _id, you will have to create const ObjectID = require('mongodb').ObjectID;, 
+//and then to use it you call new ObjectID(THE_ID)
 const fccTesting = require('./freeCodeCamp/fcctesting.js');
 const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
-//To make a query search for a Mongo _id, you will have to create const ObjectID = require('mongodb').ObjectID;, 
-//and then to use it you call new ObjectID(THE_ID)
+const bcrypt = require('bcrypt');
+
 const app = express();
 app.set('view engine', 'pug') //add app.set after app is initialized
 
@@ -33,6 +35,8 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+
 
 myDB(async client => {
   const myDataBase = await client.db('database').collection('users');
@@ -94,9 +98,10 @@ myDB(async client => {
         } else if (user) {
           res.redirect('/');
         } else {
+          const hash = bcrypt.hashSync(req.body.password, 12);
           myDataBase.insertOne({
             username: req.body.username,
-            password: req.body.password
+            password: hash
           },
             (err, doc) => {
               if (err) {
@@ -136,7 +141,7 @@ myDB(async client => {
         console.log('User ' + username + ' attempted to log in.');
         if (err) { return done(err); }
         if (!user) { return done(null, false); }
-        if (password !== user.password) { return done(null, false); }
+        if (!bcrypt.compareSync(password, user.password)) { return done(null, false); }
         return done(null, user);
       });
     }
