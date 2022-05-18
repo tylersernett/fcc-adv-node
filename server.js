@@ -71,6 +71,8 @@ myDB(async client => {
     }
   );
 
+  //prevent user from just jumping to /profile without being logged in -- 
+  //create ensureAuthenticated middleware, GET this in the /profile route
   function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
       return next();
@@ -80,7 +82,7 @@ myDB(async client => {
 
   app.route('/profile')
     .get(ensureAuthenticated, (req, res) => {
-      res.render(process.cwd() + '/views/pug/profile');
+      res.render(process.cwd() + '/views/pug/profile', {username: req.user.username});
     });
 
   //Now you will have to tell passport to use an instantiated LocalStrategy object with a few settings defined.
