@@ -2,17 +2,16 @@
 require('dotenv').config();
 const express = require('express');
 const myDB = require('./connection');
-
-//To make a query search for a Mongo _id, you will have to create const ObjectID = require('mongodb').ObjectID;, 
-//and then to use it you call new ObjectID(THE_ID)
 const fccTesting = require('./freeCodeCamp/fcctesting.js');
 const session = require('express-session');
 const passport = require('passport');
 
+const app = express();
 const routes = require('./routes.js');
 const auth = require('./auth.js');
+const http = require('http').createServer(app);
+const io = require('socket.io')(http);
 
-const app = express();
 app.set('view engine', 'pug') //add app.set after app is initialized
 
 fccTesting(app); //For FCC testing purposes
@@ -35,6 +34,10 @@ myDB(async client => {
   routes(app, myDataBase)
   auth(app, myDataBase)
 
+  io.on('connection', socket => {
+    console.log('A user has connected');
+  });
+
 }).catch(e => {
   app.route('/').get((req, res) => {
     res.render('pug', { title: e, message: 'Unable to login' });
@@ -42,6 +45,6 @@ myDB(async client => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+http.listen(PORT, () => {
   console.log('Listening on port ' + PORT);
 });
