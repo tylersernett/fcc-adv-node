@@ -24,6 +24,9 @@ running locally:
 allow consistent URLs in both local and production server:
 * process.cwd() + '/whatever'  [doesn't work with github callback??]
 
+redirect vs render
+* redirect -- tell client what URL to go to
+* render -- what to actually render to the page for the client
 
 splitting files (modules):
 ```javascript

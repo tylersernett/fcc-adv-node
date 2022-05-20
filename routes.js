@@ -1,4 +1,5 @@
 const passport = require('passport');
+const bcrypt = require('bcrypt');
 module.exports = function (app, myDataBase) {
 
     app.route('/').get((req, res) => {
@@ -16,7 +17,7 @@ module.exports = function (app, myDataBase) {
     //to authenticate on this rouate, add middleware: 'passport.authenticate('local')
     app.route("/login").post(passport.authenticate("local", { failureRedirect: '/' }),
         (req, res) => {
-            res.render('/profile');
+            res.redirect('/profile');
         }
     );
 
