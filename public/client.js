@@ -13,3 +13,7 @@ let socket = io();
 socket.on('user count', function(data) {
   console.log(data);
 });
+
+socket.on('disconnect', () => {
+  console.log('user disconnected');
+});
