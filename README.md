@@ -21,7 +21,7 @@ running locally:
 2. nodemon server.js for live updates (note the URL)
 3. visit url: loclhost:<port> 
 
-allow consistent URLs in both development and deployed server:
+allow consistent URLs in both local and production server:
 * process.cwd() + '/whatever'  [doesn't work with github callback??]
 
 
