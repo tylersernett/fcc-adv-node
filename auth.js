@@ -1,8 +1,10 @@
 //To make a query search for a Mongo _id, you will have to create const ObjectID = require('mongodb').ObjectID;, 
 //and then to use it you call new ObjectID(THE_ID)
+require('dotenv').config();
 const ObjectID = require('mongodb').ObjectID;
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
+const GitHubStrategy = require('passport-github').Strategy;
 const bcrypt = require('bcrypt');
 
 module.exports = function (app, myDataBase) {
@@ -21,7 +23,7 @@ module.exports = function (app, myDataBase) {
             done(null, doc);
         });
     });
-    
+
     //Now you will have to tell passport to use an instantiated LocalStrategy object with a few settings defined.
     passport.use(new LocalStrategy(
         function (username, password, done) {
@@ -36,4 +38,14 @@ module.exports = function (app, myDataBase) {
     ));
     //This is defining the process to use when we try to authenticate someone locally. First, it tries to find a user in our database with the username entered, then it checks for the password to match, then finally, if no errors have popped up that we checked for, like an incorrect password, the user's object is returned and they are authenticated.
 
+    passport.use(new GitHubStrategy({
+        clientID: process.env.GITHUB_CLIENT_ID,
+        clientSecret: process.env.GITHUB_CLIENT_SECRET,
+        callbackURL: process.cwd() + '/auth/github/callback'
+      },
+        function (accessToken, refreshToken, profile, cb) {
+            console.log(profile);
+            //Database logic here with callback containing our user object
+        }
+    ));
 }
