@@ -42,10 +42,36 @@ module.exports = function (app, myDataBase) {
         clientID: process.env.GITHUB_CLIENT_ID,
         clientSecret: process.env.GITHUB_CLIENT_SECRET,
         callbackURL: 'https://fcc-adv-node.herokuapp.com/auth/github/callback'
-      },
+    },
         function (accessToken, refreshToken, profile, cb) {
             console.log(profile);
             //Database logic here with callback containing our user object
+            //findOneAndUpdate allows you to search for an object and update it. If the object doesn't exist, it will be inserted and made available to the callback function. In this example, we always set last_login, increment the login_count by 1, and only populate the majority of the fields when a new object (new user) is inserted. Notice the use of default values. Sometimes a profile returned won't have all the information filled out or the user will keep it private. In this case, you handle it to prevent an error.
+            myDataBase.findOneAndUpdate(
+                { id: profile.id },
+                {
+                    $setOnInsert: {
+                        id: profile.id,
+                        name: profile.displayName || 'John Doe',
+                        photo: profile.photos[0].value || '',
+                        email: Array.isArray(profile.emails)
+                            ? profile.emails[0].value
+                            : 'No public email',
+                        created_on: new Date(),
+                        provider: profile.provider || ''
+                    },
+                    $set: {
+                        last_login: new Date()
+                    },
+                    $inc: {
+                        login_count: 1
+                    }
+                },
+                { upsert: true, new: true },
+                (err, doc) => {
+                    return cb(null, doc.value);
+                }
+            );
         }
     ));
 }
