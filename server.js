@@ -56,7 +56,6 @@ myDB(async client => {
   
     accept(null, true);
   }
-  
   function onAuthorizeFail(data, message, error, accept) {
     if (error) throw new Error(message);
     console.log('failed connection to socket.io:', message);
@@ -74,7 +73,13 @@ myDB(async client => {
       currentUsers,
       connected: true
     });
-
+    socket.on('chat message', (message) => {
+      //when 'chat message' is received, emit the username and the actual message
+      io.emit('chat message', {
+        name: socket.request.user.username,
+        message
+      });
+    })
     socket.on('disconnect', () => {
       console.log('user ' + socket.request.user.username + ' has disconnected');
       --currentUsers;
