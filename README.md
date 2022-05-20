@@ -22,7 +22,7 @@ running locally:
 3. visit url: loclhost:<port> 
 
 allow consistent URLs in both development and deployed server:
-* process.cwd() + '/auth/github/callback'
+* process.cwd() + '/whatever'  [doesn't work with github callback??]
 
 
 splitting files (modules):
