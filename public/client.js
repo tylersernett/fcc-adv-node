@@ -5,26 +5,37 @@ $(document).ready(function () {
     if (messageToSend) { //prevent sending empty strings
       socket.emit('chat message', messageToSend);//send message to server ... server is listening for 'chat message' to update
     }
-      $('#m').val('');
+    $('#m').val('');
     return false; // prevent form submit from refreshing page
   });
 });
 
 /*global io*/
 let socket = io();
-socket.on('user count', function(data) {
+socket.on('user count', function (data) {
   console.log(data);
 });
 
+//add chat message whenever use connects/disconnects
 socket.on('user', data => {
   $('#num-users').text(data.currentUsers + ' users online');
   let message =
     data.name +
     (data.connected ? ' has joined the chat.' : ' has left the chat.');
   $('#messages').append($('<li>').html('<b>' + message + '</b>'));
+  
+  snapScrollbarToBottom();
 });
 
 //listen for 'chat message' from server...once received, add a new <li> element with username and message itself
 socket.on('chat message', data => {
   $('#messages').append($('<li>').html('<b>' + data.name + ': </b>' + data.message));
+  
+  snapScrollbarToBottom();
 });
+
+//lock scroll bar to bottom on new message:
+const snapScrollbarToBottom = () => {
+  var objDiv = document.getElementById("messages");
+  objDiv.scrollTop = objDiv.scrollHeight;
+}

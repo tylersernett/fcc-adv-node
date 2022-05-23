@@ -9,7 +9,7 @@ Things learned...
 running heroku:
 1. create githib repo
 2. clone locally
-3. heroku create <appname>
+3. heroku create {appname}
 4. git add .
 5. git commit -m "Initial commit"
 6. git push heroku
@@ -18,8 +18,8 @@ running heroku:
 
 running locally:
 1. npm install
-2. nodemon server.js for live updates (note the URL)
-3. visit url: loclhost:<port> 
+2. nodemon server.js for live updates (note the port)
+3. visit url: localhost:{port}
 
 allow consistent URLs in both local and production server:
 * process.cwd() + '/whatever'  [doesn't work with github callback??]
@@ -27,6 +27,15 @@ allow consistent URLs in both local and production server:
 redirect vs render
 * redirect -- tell client what URL to go to
 * render -- what to actually render to the page for the client
+
+socket.io
+```javascript
+//send
+socket.emit(messageVar, messageContent)
+//listen
+socket.on(messageVar, (arg)=> {actions} )
+```
+
 
 splitting files (modules):
 ```javascript

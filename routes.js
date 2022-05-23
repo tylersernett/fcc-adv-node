@@ -3,18 +3,21 @@ const bcrypt = require('bcrypt');
 module.exports = function (app, myDataBase) {
 
     app.route('/').get((req, res) => {
-        //Change the response to render the Pug template
-        res.render('pug', {
-            title: 'Connected to Database',
-            message: 'Please login',
-            showLogin: true,
-            showRegistration: true,
-            showSocialAuth: true
-        });
+        if (req.isAuthenticated()) {
+            res.redirect('/profile')
+        } else {
+            res.render('pug', {
+                title: 'Connected to Database',
+                message: 'Please login',
+                showLogin: true,
+                showRegistration: true,
+                showSocialAuth: true,
+            });
+        }
     });
 
     //add the route 'login' to accept a POST request.
-    //to authenticate on this rouate, add middleware: 'passport.authenticate('local')
+    //to authenticate on this route, add middleware: 'passport.authenticate('local')
     app.route("/login").post(passport.authenticate("local", { failureRedirect: '/' }),
         (req, res) => {
             res.redirect('/profile');
@@ -67,14 +70,12 @@ module.exports = function (app, myDataBase) {
             res.render(process.cwd() + '/views/pug/profile', { username: req.user.username });
         });
 
-
     app.route("/auth/github").get(passport.authenticate('github'));
 
     app.route("/auth/github/callback").get(passport.authenticate('github', { failureRedirect: '/' }),
         (req, res) => {
             req.session.user_id = req.user.id
             res.redirect('/chat');
-            
         }
     );
 
